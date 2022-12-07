@@ -1,0 +1,48 @@
+(1) Create Database "adventureworks_retail_db" & dump "MySqlDump.sql" inside the database.
+
+(2) Create Views inside the database using script "MySqlViewsCreation.sql"
+
+> mysql -u root -p
+mysql> use adventureworks_retail_db;
+mysql> source MySqlViewsCreation.sql;
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+(1) Sqoop Jobs can be created by executed commands from script file "SqoopImportJobs"
+
+(2) After creating the job scripts can be sqoop jobs can be executed using below commands
+
+> sqoop-job --exec load_customers;
+> sqoop-job --exec load_products;
+> sqoop-job --exec load_date;
+> sqoop-job --exec load_specialoffer;
+> sqoop-job --exec load_creditcard;
+> sqoop-job --exec load_store;
+> sqoop-job --exec load_sales;
+> sqoop-job --exec load_sales_order;
+
+Note:
+-> Subsequent execution of sqoop job will incrementally import the data to the target directory in HDFS.
+-> We don't need to creat sqoop job every time but just once.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+(1) Open Hive Shell
+(2) Create New Database for AdventureWorks DataWarehouse
+
+hive> DROP DATABASE adventureworks_dwh;
+hive> CREATE DATABASE adventureworks_dwh;
+
+(3) Run "AdventureWorksDWHCreation.hql" script using below command in terminal
+
+> hive --database adventureworks_dwh -f AdventureWorksDWHCreation.hql
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+(1) Compile the scala project "ExtractDemographics" to get the Jar file that extracts Customer & Store Demographics, packages JAR file will be located at "ExtractDemographics/target/scala-2.12/adventureworks-transformation_2.12-1.0.jar"
+
+(2) Run "adventureworks-transformation_2.12-1.0.jar" using spark-submit
+
+> spark-submit --class ExtractDemographics adventureworks-transformation_2.12-1.0.jar <customerInputPath> <customerOutputPath> <storeInputPath> <storeOutputPath>
+
+

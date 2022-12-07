@@ -1,0 +1,134 @@
+sqoop-job --delete load_customers;
+
+sqoop-job \
+	--create load_customers \
+	-- import \
+	--connect jdbc:mysql://localhost:3306/adventureworks_retail_db \
+	--username root \
+	--password admin \
+	--query 'SELECT customer_id,account_number,customer_type,demographics,territory_name,country_region_code,territory_group,modified_date FROM v_customer WHERE $CONDITIONS' \
+	--target-dir /adventureworks/customer/ \
+	--incremental lastmodified \
+	--check-column modified_date \
+	--last-value '1999-01-01 00:00:00.00' \
+	--split-by customer_id \
+	--merge-key customer_id;
+	
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+sqoop-job --delete load_products;
+
+sqoop-job \
+	--create load_products \
+	-- import \
+	--connect jdbc:mysql://localhost:3306/adventureworks_retail_db \
+	--username root \
+	--password admin \
+	--query 'SELECT product_id,product_number,product_name,model_name,price,category_name,subcategory_name,modified_date FROM v_product WHERE $CONDITIONS' \
+	--target-dir /adventureworks/product/ \
+	--incremental lastmodified \
+	--check-column modified_date \
+	--last-value '1999-01-01 00:00:00.00' \
+	--split-by product_id \
+	--merge-key product_id;
+	
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+sqoop-job --delete load_date;
+
+sqoop-job \
+	--create load_date \
+	-- import \
+	--connect jdbc:mysql://localhost:3306/adventureworks_retail_db \
+	--username root \
+	--password admin \
+	--query 'SELECT date_key,full_date,date_name,date_name_us,date_name_eu,day_of_week,day_name_of_week,day_of_month,day_of_year,weekday_weekend,week_of_year,month_name,month_of_year,is_last_day_of_month,calendar_quarter,calendar_year,calendar_year_month,calendar_year_qtr,fiscal_month_of_year,fiscal_quarter,fiscal_year,fiscal_year_month,fiscal_year_qtr FROM dim_date WHERE $CONDITIONS' \
+	--target-dir /adventureworks/date/ \
+	--split-by date_key;
+	
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+sqoop-job --delete load_specialoffer;
+
+sqoop-job \
+	--create load_specialoffer \
+	-- import \
+	--connect jdbc:mysql://localhost:3306/adventureworks_retail_db \
+	--username root \
+	--password admin \
+	--query 'SELECT specialoffer_id,description,discount_pct,type,category,start_date,end_date,min_qty,max_qty,modified_date FROM specialoffer WHERE $CONDITIONS' \
+	--target-dir /adventureworks/specialoffer/ \
+	--incremental lastmodified \
+	--check-column modified_date \
+	--last-value '1999-01-01 00:00:00.00' \
+	--split-by specialoffer_id \
+	--merge-key specialoffer_id;
+	
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+sqoop-job --delete load_creditcard;
+
+sqoop-job \
+	--create load_creditcard \
+	-- import \
+	--connect jdbc:mysql://localhost:3306/adventureworks_retail_db \
+	--username root \
+	--password admin \
+	--query 'SELECT creditcard_id,card_type,card_number,exp_month,exp_year,modified_date FROM ccard WHERE $CONDITIONS' \
+	--target-dir /adventureworks/creditcard/ \
+	--incremental lastmodified \
+	--check-column modified_date \
+	--last-value '1999-01-01 00:00:00.00' \
+	--split-by creditcard_id;
+	
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+sqoop-job --delete load_store;
+
+sqoop-job \
+	--create load_store \
+	-- import \
+	--connect jdbc:mysql://localhost:3306/adventureworks_retail_db \
+	--username root \
+	--password admin \
+	--query 'SELECT store_id,store_name,demographics,territory_name,country_region_code,territory_group,modified_date FROM v_store WHERE $CONDITIONS' \
+	--target-dir /adventureworks/store/ \
+	--incremental lastmodified \
+	--check-column modified_date \
+	--last-value '1999-01-01 00:00:00.00' \
+	--split-by store_id \
+	--merge-key store_id;
+	
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+sqoop-job --delete load_sales;
+
+sqoop-job \
+	--create load_sales \
+	-- import \
+	--connect jdbc:mysql://localhost:3306/adventureworks_retail_db \
+	--username root \
+	--password admin \
+	--query 'SELECT salesorder_detail_id,salesorder_id,customer_id,product_id,store_id,date_id,specialoffer_id,creditcard_id,salesorder_number,quantity,unit_price,unit_price_discount,line_total FROM v_sales WHERE $CONDITIONS' \
+	--target-dir /adventureworks/sales/ \
+	--incremental append \
+	--check-column salesorder_detail_id \
+	--last-value 0 \
+	--split-by salesorder_detail_id;
+	
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+sqoop-job --delete load_sales_order;
+
+sqoop-job \
+	--create load_sales_order \
+	-- import \
+	--connect jdbc:mysql://localhost:3306/adventureworks_retail_db \
+	--username root \
+	--password admin \
+	--query 'SELECT salesorder_id,customer_id,store_id,date_id,creditcard_id,salesorder_number,sub_total,tax_amt,freight,total_due FROM v_sales_order WHERE $CONDITIONS' \
+	--target-dir /adventureworks/sales_order/ \
+	--incremental append \
+	--check-column salesorder_id \
+	--last-value 0 \
+	--split-by salesorder_id;
