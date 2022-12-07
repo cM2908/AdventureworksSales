@@ -1,0 +1,12 @@
+# sbt
+project/project/
+project/target/
+target/
+
+# other?
+.history
+.scala_dependencies
+.cache-main
+
+# general
+*.class
